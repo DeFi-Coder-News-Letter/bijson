@@ -6,6 +6,7 @@ package bijson
 
 import (
 	"bytes"
+	"fmt"
 	"math"
 	"math/big"
 	"reflect"
@@ -55,9 +56,10 @@ var optionalsExpected = `{
 }`
 
 type bigIntTestStruct struct {
-	TestStr   string  `json:"testStr"`
-	OurBigInt big.Int `json:"ourBigInt"`
-	TestInt   int     `json:"testInt"`
+	TestStr    string   `json:"testStr"`
+	OurBigInt  *big.Int `json:"ourBigInt"`
+	OurBigInt2 big.Int  `json:"ourBigInt2"`
+	TestInt    int      `json:"testInt"`
 }
 
 type pointz struct {
@@ -110,12 +112,13 @@ func TestBigInt(t *testing.T) {
 		t.Fatal("did not encode bigInt right")
 	}
 	testStr := "yoyo"
-	testStruct := bigIntTestStruct{TestStr: testStr, OurBigInt: bn}
+	testStruct := bigIntTestStruct{TestStr: testStr, OurBigInt: &bn, OurBigInt2: bn}
 
 	b, err := Marshal(testStruct)
 	if err != nil {
 		t.Fatal(err)
 	}
+	fmt.Println(string(b))
 	t.Log(testStruct)
 	t.Log(string(b))
 }

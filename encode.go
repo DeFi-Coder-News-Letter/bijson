@@ -358,13 +358,17 @@ var (
 // newTypeEncoder constructs an encoderFunc for a type.
 // The returned encoder only checks CanAddr when allowAddr is true.
 func newTypeEncoder(t reflect.Type, allowAddr bool) encoderFunc {
-	if t.Implements(marshalerType) {
-		return marshalerEncoder
+	if t.Kind() == reflect.Ptr && reflect.TypeOf(&big.Int{}) == t {
+		return bigIntPtrEncoder
 	}
 	// big.Int encoder provided here
 	if t.Name() == "Int" {
 		return bigIntEncoder
 	}
+	if t.Implements(marshalerType) {
+		return marshalerEncoder
+	}
+
 	if t.Kind() != reflect.Ptr && allowAddr {
 		if reflect.PtrTo(t).Implements(marshalerType) {
 			return newCondAddrEncoder(addrMarshalerEncoder, newTypeEncoder(t, false))
@@ -410,18 +414,14 @@ func newTypeEncoder(t reflect.Type, allowAddr bool) encoderFunc {
 	}
 }
 
+func bigIntPtrEncoder(e *encodeState, v reflect.Value, quoted bool) {
+	bigInt := v.Interface().(*big.Int)
+	e.string(bigInt.Text(16))
+}
+
 func bigIntEncoder(e *encodeState, v reflect.Value, quoted bool) {
 	bigInt := v.Interface().(big.Int)
-
-	if quoted {
-		sb, err := Marshal(bigInt.Text(16))
-		if err != nil {
-			e.error(err)
-		}
-		e.string(string(sb))
-	} else {
-		e.string(bigInt.Text(16))
-	}
+	e.string(bigInt.Text(16))
 }
 
 func invalidValueEncoder(e *encodeState, v reflect.Value, quoted bool) {

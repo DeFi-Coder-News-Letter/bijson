@@ -793,6 +793,10 @@ func (d *decodeState) literalStore(item []byte, v reflect.Value, fromQuoted bool
 		// big.Int decoding done here
 		if v.Type().String() == "*big.Int" {
 			b := v.Interface().(*big.Int)
+			if b == nil {
+				v.Set(reflect.ValueOf(new(big.Int)))
+				b = v.Interface().(*big.Int)
+			}
 			b.SetString(string(s), 16)
 			break
 		}
