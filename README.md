@@ -4,7 +4,7 @@ Clone of `fastjson` by intel-go, `bijson` has the same API as json from standard
 
 ## Getting Started
 ```
-$go get github.com/torusresearch/bijson
+$ go get github.com/torusresearch/bijson
 ```
 
 
