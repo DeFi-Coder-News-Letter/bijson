@@ -1,6 +1,8 @@
 # bijson: optimized standard library JSON for Go
 
-Clone of `fastjson` by intel-go, `bijson` has the same API as json from standard library `encoding/json`... and it serializes(deserializes) big.Int to(from) hex strings
+Clone of `fastjson` by intel-go, `bijson` has the same API as json from standard library `encoding/json`... and it serializes(deserializes) big.Int to(from) hex strings.
+
+Note: big.Int serialization does not support the `",string"` struct tag
 
 ## Getting Started
 ```
